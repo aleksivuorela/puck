@@ -509,15 +509,22 @@ const DropZoneRenderItem = ({
   config,
   item,
   metadata,
+  mode,
 }: {
   config: Config;
   item: ComponentData;
   metadata: Metadata;
+  mode?: "edit" | "render";
 }) => {
   const Component = config.components[item.type];
 
   const props = useSlots(config, item, (slotProps) => (
-    <SlotRenderPure {...slotProps} config={config} metadata={metadata} />
+    <SlotRenderPure
+      {...slotProps}
+      config={config}
+      metadata={metadata}
+      mode={mode}
+    />
   )) as WithPuckProps<ComponentData["props"]>;
 
   const nextContextValue = useMemo<DropZoneContext>(
@@ -573,23 +580,28 @@ const DropZoneRender = forwardRef<HTMLDivElement, DropZoneProps>(
       content = setupZone(data, zoneCompound).zones[zoneCompound];
     }
 
+    const items = content.map((item) => {
+      const Component = config.components[item.type];
+      return Component ? (
+        <DropZoneRenderItem
+          key={item.props.id}
+          config={config}
+          item={item}
+          metadata={metadata}
+          mode={ctx?.mode}
+        />
+      ) : null;
+    });
+
+    console.log("Rendering DropZone...", ctx);
+
+    if (ctx?.mode === "render") {
+      return <>{items}</>;
+    }
+
     return (
       <div className={className} style={style} ref={ref}>
-        {content.map((item) => {
-          const Component = config.components[item.type];
-          if (Component) {
-            return (
-              <DropZoneRenderItem
-                key={item.props.id}
-                config={config}
-                item={item}
-                metadata={metadata}
-              />
-            );
-          }
-
-          return null;
-        })}
+        {items}
       </div>
     );
   }

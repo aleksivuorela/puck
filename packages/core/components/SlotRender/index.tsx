@@ -8,9 +8,11 @@ export * from "./server";
 export const ContextSlotRender = ({
   componentId,
   zone,
+  mode,
 }: {
   componentId: string;
   zone: string;
+  mode?: "edit" | "render";
 }) => {
   const config = useAppStore((s) => s.config);
   const metadata = useAppStore((s) => s.metadata);
@@ -31,6 +33,7 @@ export const ContextSlotRender = ({
       zone={zone}
       config={config}
       metadata={metadata}
+      mode={mode}
     />
   );
 };
