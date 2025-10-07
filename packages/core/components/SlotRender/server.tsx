@@ -57,8 +57,6 @@ export const SlotRender = forwardRef<HTMLDivElement, SlotRenderProps>(
     { className, style, content, config, metadata, mode },
     ref
   ) {
-    console.log("Rendering Slot...", mode);
-
     const items = content.map((item) => {
       if (!config.components[item.type]) {
         return null;

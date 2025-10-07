@@ -593,8 +593,6 @@ const DropZoneRender = forwardRef<HTMLDivElement, DropZoneProps>(
       ) : null;
     });
 
-    console.log("Rendering DropZone...", ctx);
-
     if (ctx?.mode === "render") {
       return <>{items}</>;
     }
