@@ -43,9 +43,9 @@ export const Stats: ComponentConfig<StatsProps> = {
       },
     ],
   },
-  render: ({ items }) => {
+  render: ({ items, puck }) => {
     return (
-      <Section className={getClassName()} maxWidth={"916px"}>
+      <Section className={getClassName()} maxWidth={"916px"} ref={puck.dragRef}>
         <div className={getClassName("items")}>
           {items.map((item, i) => (
             <div key={i} className={getClassName("item")}>

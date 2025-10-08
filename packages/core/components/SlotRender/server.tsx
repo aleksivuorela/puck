@@ -13,7 +13,6 @@ type SlotRenderProps = DropZoneProps & {
   content: Content;
   config: Config;
   metadata: Metadata;
-  mode?: "edit" | "render";
 };
 
 export const SlotRenderPure = (props: SlotRenderProps) => (
@@ -54,32 +53,26 @@ const Item = ({
  */
 export const SlotRender = forwardRef<HTMLDivElement, SlotRenderProps>(
   function SlotRenderInternal(
-    { className, style, content, config, metadata, mode },
+    { className, style, content, config, metadata },
     ref
   ) {
-    const items = content.map((item) => {
-      if (!config.components[item.type]) {
-        return null;
-      }
-
-      return (
-        <Item
-          key={item.props.id}
-          config={config}
-          item={item}
-          metadata={metadata}
-        />
-      );
-    });
-
-    if (mode === "render") {
-      return <>{items}</>;
-    }
-
     return (
-      <div className={className} style={style} ref={ref}>
-        {items}
-      </div>
+      <>
+        {content.map((item) => {
+          if (!config.components[item.type]) {
+            return null;
+          }
+
+          return (
+            <Item
+              key={item.props.id}
+              config={config}
+              item={item}
+              metadata={metadata}
+            />
+          );
+        })}
+      </>
     );
   }
 );

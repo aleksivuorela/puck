@@ -231,6 +231,9 @@ const DropZoneChild = ({
   const isInserting =
     "previewType" in item ? item.previewType === "insert" : false;
 
+  // Default to using inline mode, removing wrapper div
+  const isInline = componentConfig?.inline ?? true;
+
   if (isInserting) {
     Render = renderPreview;
   }
@@ -250,7 +253,7 @@ const DropZoneChild = ({
       inDroppableZone={inDroppableZone}
     >
       {(dragRef) =>
-        componentConfig?.inline && !isInserting ? (
+        isInline && !isInserting ? (
           <>
             <Render
               {...transformedProps}
@@ -509,22 +512,15 @@ const DropZoneRenderItem = ({
   config,
   item,
   metadata,
-  mode,
 }: {
   config: Config;
   item: ComponentData;
   metadata: Metadata;
-  mode?: "edit" | "render";
 }) => {
   const Component = config.components[item.type];
 
   const props = useSlots(config, item, (slotProps) => (
-    <SlotRenderPure
-      {...slotProps}
-      config={config}
-      metadata={metadata}
-      mode={mode}
-    />
+    <SlotRenderPure {...slotProps} config={config} metadata={metadata} />
   )) as WithPuckProps<ComponentData["props"]>;
 
   const nextContextValue = useMemo<DropZoneContext>(
@@ -580,27 +576,24 @@ const DropZoneRender = forwardRef<HTMLDivElement, DropZoneProps>(
       content = setupZone(data, zoneCompound).zones[zoneCompound];
     }
 
-    const items = content.map((item) => {
-      const Component = config.components[item.type];
-      return Component ? (
-        <DropZoneRenderItem
-          key={item.props.id}
-          config={config}
-          item={item}
-          metadata={metadata}
-          mode={ctx?.mode}
-        />
-      ) : null;
-    });
-
-    if (ctx?.mode === "render") {
-      return <>{items}</>;
-    }
-
     return (
-      <div className={className} style={style} ref={ref}>
-        {items}
-      </div>
+      <>
+        {content.map((item) => {
+          const Component = config.components[item.type];
+          if (Component) {
+            return (
+              <DropZoneRenderItem
+                key={item.props.id}
+                config={config}
+                item={item}
+                metadata={metadata}
+              />
+            );
+          }
+
+          return null;
+        })}
+      </>
     );
   }
 );
