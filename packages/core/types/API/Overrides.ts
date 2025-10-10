@@ -66,6 +66,14 @@ export type Overrides<UserConfig extends Config = Config> = OverridesGeneric<{
   puck: RenderFunc;
 }>;
 
+export interface RenderOverrides {
+  div?: RenderFunc<{
+    children?: ReactNode;
+    className?: string;
+    style?: React.CSSProperties;
+  }>;
+}
+
 export type FieldRenderFunctions<
   UserConfig extends Config = Config,
   G extends UserGenerics<UserConfig> = UserGenerics<UserConfig>,

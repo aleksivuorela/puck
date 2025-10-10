@@ -231,9 +231,6 @@ const DropZoneChild = ({
   const isInserting =
     "previewType" in item ? item.previewType === "insert" : false;
 
-  // Default to using inline mode, removing wrapper div
-  const isInline = componentConfig?.inline ?? true;
-
   if (isInserting) {
     Render = renderPreview;
   }
@@ -253,7 +250,7 @@ const DropZoneChild = ({
       inDroppableZone={inDroppableZone}
     >
       {(dragRef) =>
-        isInline && !isInserting ? (
+        componentConfig?.inline && !isInserting ? (
           <>
             <Render
               {...transformedProps}
@@ -558,6 +555,11 @@ const DropZoneRender = forwardRef<HTMLDivElement, DropZoneProps>(
     let zoneCompound = `${areaId}:${zone}`;
     let content = data?.content || [];
 
+    const Wrapper = useMemo(
+      () => config.overrides?.div || "div",
+      [config.overrides]
+    );
+
     // Register zones if running Render mode inside editor (i.e. previewMode === "interactive")
     useEffect(() => {
       // Only register zones, not slots
@@ -577,7 +579,7 @@ const DropZoneRender = forwardRef<HTMLDivElement, DropZoneProps>(
     }
 
     return (
-      <>
+      <Wrapper className={className} style={style} ref={ref}>
         {content.map((item) => {
           const Component = config.components[item.type];
           if (Component) {
@@ -593,7 +595,7 @@ const DropZoneRender = forwardRef<HTMLDivElement, DropZoneProps>(
 
           return null;
         })}
-      </>
+      </Wrapper>
     );
   }
 );

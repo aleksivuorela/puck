@@ -43,7 +43,6 @@ export const Hero: PuckComponent<HeroProps> = ({
         hasImageBackground: image?.mode === "background",
       })}
       style={{ paddingTop: padding, paddingBottom: padding }}
-      ref={puck.dragRef}
     >
       {image?.mode === "background" && (
         <>
